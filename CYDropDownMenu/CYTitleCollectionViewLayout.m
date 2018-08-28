@@ -13,7 +13,7 @@
 - (NSArray *) layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray *allAttributes = [super layoutAttributesForElementsInRect:rect];
     
-    if (self.autoCenterTitles) {
+    if (self.autoCenterTitles) { //for the case there are only 1 or 2 titles, we center them.
         UICollectionViewLayoutAttributes *attributes = [allAttributes lastObject];
         CGRect collectionViewFrame = self.collectionView.frame;
         CGFloat leftWidth = collectionViewFrame.size.width - attributes.frame.origin.x - attributes.frame.size.width;

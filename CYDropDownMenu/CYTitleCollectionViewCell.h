@@ -10,6 +10,10 @@
 
 @interface CYTitleCollectionViewCell : UICollectionViewCell
 
-@property(nonatomic,copy) NSString *title;
+@property(nonatomic,strong) UILabel *titleLabel;
+@property(nonatomic,strong) UIColor *titleColor;
+@property(nonatomic,strong) UIColor *titleTintColor;
+
+- (void)makeIndicatorArrowDown;
 
 @end

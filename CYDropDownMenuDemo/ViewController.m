@@ -20,11 +20,16 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     CYDropDownMenu *dropDownMenu = [[CYDropDownMenu alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 50)];
-    dropDownMenu.sectionTitles = @[@"Menu1",@"Menu212312",@"Menu34"];
-    dropDownMenu.sectionsItems = @[@[@"Menu111",@"Menu12",@"Menu13"],
-                                @[@"Menu211",@"Menu22",@"Menu23"]];
+    dropDownMenu.sectionTitles = @[@"Category",@"Price",@"Distance"];
+    dropDownMenu.sectionsItems = @[@[@"Food",@"Hotel",@"Bank",@"Cinema",@"Entertainment"],
+                                   @[@"$0",@"$1-$100",@"$101-$1000",@">$1000"],
+                                   @[@"0-10km",@"11-100km",@"101-1000km",@">1000km"],];
     dropDownMenu.autoCenterTitles = YES;
     [self.view addSubview:dropDownMenu];
+    
+    // additional customizations
+    // dropDownMenu.sectionTitleColor = UIColor.redColor;
+    // dropDownMenu.sectionTitleTintColor = UIColor.blueColor;
 }
 
 

@@ -11,7 +11,7 @@
 
 @interface CYTitleCollectionViewCell()
 
-@property(nonatomic,strong) UILabel *titleLabel;
+
 @property(nonatomic,strong) UIImageView *indicatorImageView;
 
 @end
@@ -19,7 +19,7 @@
 
 @implementation CYTitleCollectionViewCell
 
-
+#pragma mark - Properties
 - (UILabel *)titleLabel {
     if (_titleLabel == nil) {
         _titleLabel = [[UILabel alloc] init];
@@ -28,6 +28,16 @@
     }
     
     return _titleLabel;
+}
+
+- (void)setTitleColor:(UIColor *)titleColor {
+    _titleColor = titleColor;
+    [self applyTitleColor];
+}
+
+- (void)setTitleTintColor:(UIColor *)titleTintColor {
+    _titleTintColor = titleTintColor;
+    [self applyTitleColor];
 }
 
 - (UIImageView *)indicatorImageView {
@@ -40,11 +50,21 @@
     return _indicatorImageView;
 }
 
-- (void)setTitle:(NSString *)title {
-    _title = title;
-    self.titleLabel.text = title;
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    
+    if (selected) {
+        _indicatorImageView.image = [UIImage imageNamed:@"arrow_up"];
+    }
+    else{
+        _indicatorImageView.image = [UIImage imageNamed:@"arrow_down"];
+    }
+    
+    [self applyTitleColor];
 }
 
+
+#pragma mark - Overrided Functions
 - (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     UICollectionViewLayoutAttributes *attributes = [super preferredLayoutAttributesFittingAttributes:layoutAttributes];
     
@@ -55,6 +75,23 @@
     self.indicatorImageView.frame = CGRectMake(_titleLabel.frame.origin.x + _titleLabel.frame.size.width + 4.0, 0, self.indicatorImageView.image.size.width, attributes.frame.size.height);
 
     return attributes;
+}
+
+
+#pragma mark - Private Functions
+- (void)applyTitleColor {
+    if (self.selected) {
+        if (_titleTintColor != nil) {
+            self.titleLabel.textColor = _titleTintColor;
+        }
+    }
+    else{
+        self.titleLabel.textColor = _titleColor;
+    }
+}
+
+- (void)makeIndicatorArrowDown {
+    _indicatorImageView.image = [UIImage imageNamed:@"arrow_down"];
 }
 
 

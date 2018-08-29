@@ -23,6 +23,11 @@
 @property(nonatomic,assign) CGFloat maxMenuHeight;
 @property(nonatomic,assign) BOOL autoCenterTitles; //for the case there are only 1 or 2 titles, we center them.
 @property(nonatomic,weak) UIView *rootView;
+@property(nonatomic,strong) UIColor *sectionTitleColor;
+@property(nonatomic,strong) UIColor *sectionTitleTintColor;
+@property(nonatomic,strong) UIColor *itemColor;
+@property(nonatomic,strong) UIColor *itemTintColor;
+@property(nonatomic,assign) Boolean bottomLineHidden;
 
 @property(nonatomic,weak) id<CYDropDownMenuDelegate> delegate;
 

@@ -13,11 +13,13 @@
 
 @interface CYDropDownMenu() <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UITableViewDataSource,UITableViewDelegate> {
     NSInteger selectedTitleIndex;
+    NSMutableDictionary *selectedItemIndexes;
 }
 
 @property(nonatomic,strong) UICollectionView *titlesCollectionView;
 @property(nonatomic,strong) UITableView *itemsTableView;
 @property(nonatomic,strong) UIView *shadeView;
+@property(nonatomic,strong) CALayer *bottomLineLayer;
 
 @end
 
@@ -27,6 +29,44 @@
 NSString *const kTitleCellId = @"CYTitleCollectionViewCell";
 NSString *const kItemCellId = @"CYItemsTableViewCell";
 CGFloat const kItemRowHeight = 44;
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (void)commonInit {
+    self.backgroundColor = UIColor.whiteColor;
+    _itemTintColor = _sectionTitleColor = [UIColor colorWithRed:40.0/255.0 green:203.0/255.0 blue:158.0/255.0 alpha:1.0];
+    _itemColor = UIColor.lightGrayColor;
+    selectedItemIndexes = [NSMutableDictionary dictionary];
+}
+
+- (void)resetSelectedItemIndexes {
+    for (int i=0; i<_sectionTitles.count; i++) {
+        selectedItemIndexes[@(i)] = @(-1);
+    }
+}
+
 
 #pragma mark - Properties
 - (UICollectionView *)titlesCollectionView {
@@ -52,6 +92,7 @@ CGFloat const kItemRowHeight = 44;
         _itemsTableView = [[UITableView alloc] init];
         _itemsTableView.dataSource = self;
         _itemsTableView.delegate = self;
+        _itemsTableView.separatorColor = UIColor.clearColor;
         [_itemsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kItemCellId];
     }
     
@@ -69,15 +110,34 @@ CGFloat const kItemRowHeight = 44;
     return _shadeView;
 }
 
+- (CALayer *)bottomLineLayer {
+    if (_bottomLineLayer == nil) {
+        _bottomLineLayer = [CALayer layer];
+        _bottomLineLayer.backgroundColor = [UIColor.lightGrayColor colorWithAlphaComponent:0.3].CGColor;
+        [self.layer addSublayer:_bottomLineLayer];
+    }
+    return _bottomLineLayer;
+}
+
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     
     self.titlesCollectionView.frame = self.bounds;
+    if (!self.bottomLineHidden) {
+        self.bottomLineLayer.frame = CGRectMake(0, self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+    }
 }
 
 - (void)setSectionTitles:(NSArray<NSString *> *)sectionTitles{
     _sectionTitles = sectionTitles;
+    [self resetSelectedItemIndexes];
     [self.titlesCollectionView reloadData];
+}
+
+- (void)setSectionsItems:(NSArray<NSArray<NSString *> *> *)sectionsItems {
+    _sectionsItems = sectionsItems;
+    [self resetSelectedItemIndexes];
+    [self.itemsTableView reloadData];
 }
 
 - (void)setAutoCenterTitles:(BOOL)autoCenterTitles {
@@ -95,6 +155,16 @@ CGFloat const kItemRowHeight = 44;
     return _rootView;
 }
 
+- (void)setSectionTitleColor:(UIColor *)sectionTitleColor {
+    _sectionTitleColor = sectionTitleColor;
+    [self reloadTitleCollectionViewAndKeepSelection];
+}
+
+- (void)setSectionTitleTintColor:(UIColor *)sectionTitleTintColor {
+    _sectionTitleTintColor = sectionTitleTintColor;
+    [self reloadTitleCollectionViewAndKeepSelection];
+}
+
 
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -103,8 +173,9 @@ CGFloat const kItemRowHeight = 44;
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CYTitleCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kTitleCellId forIndexPath:indexPath];
-    cell.backgroundColor = UIColor.lightGrayColor;
-    cell.title = self.sectionTitles[indexPath.row];
+    cell.titleLabel.text = self.sectionTitles[indexPath.row];
+    cell.titleColor = self.sectionTitleColor;
+    cell.titleTintColor = self.sectionTitleTintColor;
     return cell;
 }
 
@@ -129,9 +200,18 @@ CGFloat const kItemRowHeight = 44;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kItemCellId forIndexPath:indexPath];
+    
     if (selectedTitleIndex < self.sectionsItems.count) {
         NSArray *items = self.sectionsItems[selectedTitleIndex];
         cell.textLabel.text = items[indexPath.row];
+    }
+    
+    NSInteger selectedIndex = [selectedItemIndexes[@(selectedTitleIndex)] integerValue];
+    if (selectedIndex == indexPath.row) {
+        cell.textLabel.textColor = self.itemTintColor;
+    }
+    else{
+        cell.textLabel.textColor = self.itemColor;
     }
     
     return cell;
@@ -142,17 +222,23 @@ CGFloat const kItemRowHeight = 44;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    selectedItemIndexes[@(selectedTitleIndex)] = @(indexPath.row);
+    
     [self shadeTapped:nil];
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(CYDropDownMenu:didSelectItemAtIndexPath:)]) {
-        NSIndexPath *_indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:selectedTitleIndex];
-        [self.delegate CYDropDownMenu:self didSelectItemAtIndexPath:_indexPath];
+        NSIndexPath *selectedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:selectedTitleIndex];
+        [self.delegate CYDropDownMenu:self didSelectItemAtIndexPath:selectedIndexPath];
     }
 }
 
 
 #pragma mark - Actions
 - (void)displayShadeView {
-    self.shadeView.frame = self.rootView.bounds;
+    CGRect frame = [self.titlesCollectionView convertRect:self.titlesCollectionView.frame toView:self.rootView];
+    frame.origin.y += self.titlesCollectionView.frame.size.height;
+    frame.size.height = self.rootView.bounds.size.height - self.titlesCollectionView.frame.size.height - self.titlesCollectionView.frame.origin.y;
+    self.shadeView.frame = frame;
     [_rootView addSubview:self.shadeView];
     [_rootView bringSubviewToFront:self];
 }
@@ -160,6 +246,12 @@ CGFloat const kItemRowHeight = 44;
 - (void)shadeTapped:(id)sender {
     [self.shadeView removeFromSuperview];
     [self.itemsTableView removeFromSuperview];
+    
+    NSIndexPath *selectedIndexPath = [[self.titlesCollectionView indexPathsForSelectedItems] firstObject];
+    if (selectedIndexPath) {
+        CYTitleCollectionViewCell *cell = (CYTitleCollectionViewCell *)[self.titlesCollectionView cellForItemAtIndexPath:selectedIndexPath];
+        [cell makeIndicatorArrowDown];
+    }
 }
 
 - (void)displayItemsTableView {
@@ -183,6 +275,14 @@ CGFloat const kItemRowHeight = 44;
     [UIView animateWithDuration:0.4 animations:^{
         self.itemsTableView.frame = frame;
     }];
+}
+
+- (void)reloadTitleCollectionViewAndKeepSelection {
+    NSIndexPath *selectedIndexPath = [[self.titlesCollectionView indexPathsForSelectedItems] firstObject];
+    [self.titlesCollectionView reloadData];
+    if (selectedIndexPath) {
+        [self.titlesCollectionView selectItemAtIndexPath:selectedIndexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+    }
 }
 
 @end

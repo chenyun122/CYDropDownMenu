@@ -73,8 +73,7 @@ CGFloat const kItemRowHeight = 44;
     if (_titlesCollectionView == nil) {
         CYTitleCollectionViewLayout *layout = [[CYTitleCollectionViewLayout alloc] init];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        layout.estimatedItemSize = CGSizeMake(40, 50);
-        layout.autoCenterTitles = self.autoCenterTitles;
+        layout.estimatedItemSize = CGSizeMake(40, self.frame.size.height);
         _titlesCollectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
         _titlesCollectionView.backgroundColor = self.backgroundColor;
         _titlesCollectionView.dataSource = self;
@@ -102,7 +101,7 @@ CGFloat const kItemRowHeight = 44;
 - (UIView *)shadeView {
     if (_shadeView == nil) {
         _shadeView = [[UIView alloc] init];
-        _shadeView.backgroundColor = [UIColor.blackColor colorWithAlphaComponent:0.6];
+        _shadeView.backgroundColor = [UIColor.blackColor colorWithAlphaComponent:0.4];
         UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shadeTapped:)];
         [_shadeView addGestureRecognizer:tapGestureRecognizer];
     }
@@ -121,11 +120,9 @@ CGFloat const kItemRowHeight = 44;
 
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-    
+
     self.titlesCollectionView.frame = self.bounds;
-    if (!self.bottomLineHidden) {
-        self.bottomLineLayer.frame = CGRectMake(0, self.frame.size.height - 0.5, self.frame.size.width, 0.5);
-    }
+    self.bottomLineLayer.frame = CGRectMake(0, self.frame.size.height - 0.5, self.frame.size.width, 0.5);
 }
 
 - (void)setSectionTitles:(NSArray<NSString *> *)sectionTitles{
@@ -165,6 +162,10 @@ CGFloat const kItemRowHeight = 44;
     [self reloadTitleCollectionViewAndKeepSelection];
 }
 
+- (void)setBottomLineHidden:(Boolean)bottomLineHidden {
+    _bottomLineHidden = bottomLineHidden;
+    self.bottomLineLayer.hidden = bottomLineHidden;
+}
 
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -173,9 +174,17 @@ CGFloat const kItemRowHeight = 44;
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CYTitleCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kTitleCellId forIndexPath:indexPath];
-    cell.titleLabel.text = self.sectionTitles[indexPath.row];
     cell.titleColor = self.sectionTitleColor;
     cell.titleTintColor = self.sectionTitleTintColor;
+    
+    NSInteger selectedItemIndex = [selectedItemIndexes[@(indexPath.row)] integerValue];
+    if (selectedItemIndex >= 0) {
+        cell.titleLabel.text = self.sectionsItems[indexPath.row][selectedItemIndex];
+    }
+    else{
+        cell.titleLabel.text = self.sectionTitles[indexPath.row];
+    }
+    
     return cell;
 }
 
@@ -224,6 +233,13 @@ CGFloat const kItemRowHeight = 44;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     selectedItemIndexes[@(selectedTitleIndex)] = @(indexPath.row);
     
+    [self.titlesCollectionView reloadData];
+    __weak typeof(self) weakSelf = self;
+    __block NSInteger selectedTitleIndexBlock = selectedTitleIndex;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+        [weakSelf.titlesCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:selectedTitleIndexBlock inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+    });
+    
     [self shadeTapped:nil];
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(CYDropDownMenu:didSelectItemAtIndexPath:)]) {
@@ -236,7 +252,9 @@ CGFloat const kItemRowHeight = 44;
 #pragma mark - Actions
 - (void)displayShadeView {
     CGRect frame = [self.titlesCollectionView convertRect:self.titlesCollectionView.frame toView:self.rootView];
+    frame.origin.x = 0;
     frame.origin.y += self.titlesCollectionView.frame.size.height;
+    frame.size.width = self.rootView.bounds.size.width;
     frame.size.height = self.rootView.bounds.size.height - self.titlesCollectionView.frame.size.height - self.titlesCollectionView.frame.origin.y;
     self.shadeView.frame = frame;
     [_rootView addSubview:self.shadeView];
@@ -256,6 +274,7 @@ CGFloat const kItemRowHeight = 44;
 
 - (void)displayItemsTableView {
     CGRect frame = [self.titlesCollectionView convertRect:self.titlesCollectionView.frame toView:self.rootView];
+    frame.origin.x = 0;
     
     CGFloat maxHeight = self.rootView.frame.size.height - frame.origin.y - frame.size.height;
     if (self.maxMenuHeight > 0) {

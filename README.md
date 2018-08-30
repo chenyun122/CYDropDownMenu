@@ -41,7 +41,7 @@ dropDownMenu.rootView = self.view;                        //The ViewController's
 
 ___
 [中文]  
-这是一个iOS下拉菜单(或选项)。运行效果参考上面Gif动图。
+这是一个iOS下拉菜单(或选项)。运行效果参考上面Gif动图。
 
 ## 使用
 拷贝**CYDropDownMenu**目录下源代码到您的项目中，就可以像使用`UIView`那样使用它。请参考上面代码或下载运行Demo项目。

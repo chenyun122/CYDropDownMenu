@@ -37,7 +37,6 @@ dropDownMenu.itemTintColor = UIColor.redColor;            //The color of selecte
 dropDownMenu.bottomLineHidden = YES;                      //Indicates whether display the bottom line
 dropDownMenu.maxMenuHeight = 100;                         //Keep this to nil usually. The Menu height is automatically calculated, and limited in rootview's height. Set this property if you want to limit the height precisely.
 dropDownMenu.rootView = self.view;                        //Keep this to nil usually. The ViewController's view will be considered as rootView if the property is not set. Set this property to limite the DropDownMenu and its actions into a particular SubView.
-SubView.
 ```
 
 ___

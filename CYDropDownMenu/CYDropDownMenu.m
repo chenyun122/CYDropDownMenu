@@ -61,10 +61,20 @@ CGFloat const kItemRowHeight = 44;
     selectedItemIndexes = [NSMutableDictionary dictionary];
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self applyFrameToSubviews];
+}
+
 - (void)resetSelectedItemIndexes {
     for (int i=0; i<_sectionTitles.count; i++) {
         selectedItemIndexes[@(i)] = @(-1);
     }
+}
+
+- (void)applyFrameToSubviews {
+    self.titlesCollectionView.frame = self.bounds;
+    self.bottomLineLayer.frame = CGRectMake(0, self.frame.size.height - 0.5, self.frame.size.width, 0.5);
 }
 
 
@@ -120,9 +130,7 @@ CGFloat const kItemRowHeight = 44;
 
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-
-    self.titlesCollectionView.frame = self.bounds;
-    self.bottomLineLayer.frame = CGRectMake(0, self.frame.size.height - 0.5, self.frame.size.width, 0.5);
+    [self applyFrameToSubviews];
 }
 
 - (void)setSectionTitles:(NSArray<NSString *> *)sectionTitles{
@@ -144,10 +152,12 @@ CGFloat const kItemRowHeight = 44;
 
 - (UIView *)rootView {
     if (_rootView == nil) {
-        _rootView= self;
-        while (_rootView.superview != nil && ![_rootView.superview isKindOfClass:[UIWindow class]]) {
-            _rootView = _rootView.superview;
+        UIResponder *responder = self;
+        while ([responder isKindOfClass:[UIView class]]) {
+            responder = [responder nextResponder];
         }
+        UIViewController *viewController = (UIViewController *)responder;
+        _rootView = viewController.view;
     }
     return _rootView;
 }

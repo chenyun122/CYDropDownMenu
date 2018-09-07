@@ -201,9 +201,14 @@ CGFloat const kItemRowHeight = 44;
 
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    selectedTitleIndex = indexPath.row;
-    [self displayShadeView];
-    [self displayItemsTableView];
+    if (selectedTitleIndex == indexPath.row && self.itemsTableView.superview != nil) {
+        [self shadeTapped:nil]; //close menu if same title clicked twice.
+    }
+    else{ //open menu
+        selectedTitleIndex = indexPath.row;
+        [self displayShadeView];
+        [self displayItemsTableView];
+    }
 }
 
 

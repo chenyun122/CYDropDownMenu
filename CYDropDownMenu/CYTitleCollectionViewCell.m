@@ -42,7 +42,7 @@
 
 - (UIImageView *)indicatorImageView {
     if (_indicatorImageView == nil) {
-        _indicatorImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"arrow_down"]];
+        _indicatorImageView = [[UIImageView alloc] initWithImage:[self imageNamed:@"arrow_down"]];
         _indicatorImageView.contentMode = UIViewContentModeCenter;
         [self addSubview:_indicatorImageView];
     }
@@ -54,10 +54,10 @@
     [super setSelected:selected];
     
     if (selected) {
-        _indicatorImageView.image = [UIImage imageNamed:@"arrow_up"];
+        _indicatorImageView.image = [self imageNamed:@"arrow_up"];
     }
     else{
-        _indicatorImageView.image = [UIImage imageNamed:@"arrow_down"];
+        _indicatorImageView.image = [self imageNamed:@"arrow_down"];
     }
     
     [self applyTitleColor];
@@ -91,8 +91,23 @@
 }
 
 - (void)makeIndicatorArrowDown {
-    _indicatorImageView.image = [UIImage imageNamed:@"arrow_down"];
+    _indicatorImageView.image = [self imageNamed:@"arrow_down"];
 }
 
+- (UIImage *)imageNamed:(NSString *)imageName {
+    UIImage *image = [UIImage imageNamed:imageName];
+    
+    //For Pods bundle
+    if (image == nil) {
+        NSBundle *bundle = [NSBundle bundleForClass:[CYTitleCollectionViewCell class]];
+        NSURL *url = [bundle URLForResource:@"CYDropDownMenu" withExtension:@"bundle"];
+        if (url != nil) {
+            NSBundle *bundleWithUrl = [NSBundle bundleWithURL:url];
+            image = [UIImage imageNamed:imageName inBundle:bundleWithUrl compatibleWithTraitCollection:nil];
+        }
+    }
+    
+    return image;
+}
 
 @end

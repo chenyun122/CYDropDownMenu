@@ -66,7 +66,7 @@ dropDownMenu.rootView = self.view;                        //Keep this to nil usu
 ```
 
 
-###For Swift  
+### For Swift  
 We recommend using `CocoaPods` to integrate the library into your project. Then code it like this:
 ```Swift
 

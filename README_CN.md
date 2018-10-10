@@ -66,7 +66,7 @@ dropDownMenu.rootView = self.view;                        //Keep this to nil usu
 ```
 
 
-###Swift项目
+###Swift项目  
 我们推荐使用CocoaPods来集成此库到您的项目中。然后如下编码：
 ```Swift
 

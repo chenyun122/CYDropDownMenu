@@ -9,7 +9,7 @@ An iOS Drop Down Menu. It's very similar to menus for desktop applications. Scre
 
 ## Installation
 ###  CocoaPods
-To integrate StepIndicator into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate CYDropDownMenu into your Xcode project using CocoaPods, specify it in your `Podfile`:
 ```ruby
 platform :ios, '8.0'
 use_frameworks!
@@ -98,4 +98,4 @@ class ViewController: UIViewController,CYDropDownMenuDelegate {
 ```
 
 ## License
-StepIndicator is released under the MIT license. See LICENSE for details.
+CYDropDownMenu is released under the MIT license. See LICENSE for details.

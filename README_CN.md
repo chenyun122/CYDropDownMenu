@@ -1,7 +1,7 @@
 # CYDropDownMenu
 [English](https://github.com/chenyun122/CYDropDownMenu/blob/master/README.md)   
 
-这是一个iOS下拉菜单(或选项), 有点类似于桌面程序的菜单。运行效果参考上面Gif动图。  
+这是一个iOS下拉菜单(或选项), 有点类似于桌面程序的菜单。运行效果参考下面Gif动图。  
 
 <p align="center" >
 <img src="https://github.com/chenyun122/CYDropDownMenu/blob/master/ScreenShots/CYDropDownMenu.gif?raw=true" alt="CYDropDownMenu" title="CYDropDownMenu" width="35%" height="35%" />
@@ -9,7 +9,7 @@
 
 ## 集成到项目
 ###  CocoaPods
-在 Xcode 项目中通过 CocoaPods 集成 StepIndicator,只需在 `Podfile` 文件中指定以下内容:
+在 Xcode 项目中通过 CocoaPods 集成 CYDropDownMenu,只需在 `Podfile` 文件中指定以下内容:
 ```ruby
 platform :ios, '8.0'
 use_frameworks!
@@ -21,7 +21,7 @@ end
 对于Swift项目, 集成之后，记得在使用前先通过 `import CYDropDownMenu` 导入该模块。
 
 ###  手动
-把源码文件夹 `StepIndicator` 复制到您项目的相应目录下，再在 Xcode 加入该文件夹即可。
+把源码文件夹 `CYDropDownMenu` 复制到您项目的相应目录下，再在 Xcode 加入该文件夹即可。
 
 ## 使用
 集成之后可以像`UIView`那样使用它。通过Demo项目您可以快速了解如何使用，以及更多细节。
@@ -98,4 +98,4 @@ class ViewController: UIViewController,CYDropDownMenuDelegate {
 ```
 
 ## 许可协议
-StepIndicator is released under the MIT license. See LICENSE for details.
+CYDropDownMenu is released under the MIT license. See LICENSE for details.

@@ -1,15 +1,15 @@
 # CYDropDownMenu
-[简体中文](https://github.com/chenyun122/CYDropDownMenu/blob/master/README_CN.md)   
+[English](https://github.com/chenyun122/CYDropDownMenu/blob/master/README.md)   
 
-An iOS Drop Down Menu. It's very similar to menus for desktop applications. Screenshot:  
+这是一个iOS下拉菜单(或选项), 有点类似于桌面程序的菜单。运行效果参考上面Gif动图。  
 
 <p align="center" >
 <img src="https://github.com/chenyun122/CYDropDownMenu/blob/master/ScreenShots/CYDropDownMenu.gif?raw=true" alt="CYDropDownMenu" title="CYDropDownMenu" width="35%" height="35%" />
 </p>
 
-## Installation
+## 集成到项目
 ###  CocoaPods
-To integrate StepIndicator into your Xcode project using CocoaPods, specify it in your `Podfile`:
+在 Xcode 项目中通过 CocoaPods 集成 StepIndicator,只需在 `Podfile` 文件中指定以下内容:
 ```ruby
 platform :ios, '8.0'
 use_frameworks!
@@ -18,15 +18,15 @@ target 'YourProjectName' do
    pod 'CYDropDownMenu', '~> 1.0.0'
 end
 ```
-For Swfit, remember to `import CYDropDownMenu` module before using it.
+对于Swift项目, 集成之后，记得在使用前先通过 `import CYDropDownMenu` 导入该模块。
 
-###  Manually
-Copy the source code in the **/CYDropDownMenu** folder into your project.  
+###  手动
+把源码文件夹 `StepIndicator` 复制到您项目的相应目录下，再在 Xcode 加入该文件夹即可。
 
-## Usage
-Just use it like `UIView`. You could quickly find out how to use it with more details in the Demo project.
+## 使用
+集成之后可以像`UIView`那样使用它。通过Demo项目您可以快速了解如何使用，以及更多细节。
 
-**Create the `CYDropDownMenu` and set data:**
+**创建 `CYDropDownMenu` 并设置菜单数据:**
 ```Objective-C
 //Use line below or make dropDownMenu's frame.origin.y >= 64 to avoid the wrong insets if ViewController is with an UINavigationController
 //self.automaticallyAdjustsScrollViewInsets = NO;
@@ -44,7 +44,7 @@ dropDownMenu.delegate = self;
 ```
 
 
-**Customization(Optional)**
+**样式定制(可选)**
 ```Objective-C
 // Additional customizations:
 dropDownMenu.sectionTitleColor = UIColor.lightGrayColor;  //The color of top titles
@@ -57,7 +57,7 @@ dropDownMenu.rootView = self.view;                        //Keep this to nil usu
 ```
 
 
-**Handle the event**
+**事件处理**
 ```Objective-C
 #pragma mark - CYDropDownMenuDelegate
 - (void)CYDropDownMenu:(CYDropDownMenu *)dropDownMenu didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -66,8 +66,8 @@ dropDownMenu.rootView = self.view;                        //Keep this to nil usu
 ```
 
 
-###For Swift
-We recommend using `CocoaPods` to integrate the library into your project. Then code it like this:
+###Swift项目
+我们推荐使用CocoaPods来集成此库到您的项目中。然后如下编码：
 ```Swift
 
 import UIKit
@@ -97,5 +97,5 @@ class ViewController: UIViewController,CYDropDownMenuDelegate {
 
 ```
 
-## License
+## 许可协议
 StepIndicator is released under the MIT license. See LICENSE for details.

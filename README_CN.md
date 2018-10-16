@@ -15,7 +15,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 target 'YourProjectName' do
-   pod 'CYDropDownMenu', '~> 1.0.0'
+   pod 'CYDropDownMenu', '~> 1.0.1'
 end
 ```
 对于Swift项目, 集成之后，记得在使用前先通过 `import CYDropDownMenu` 导入该模块。
@@ -31,7 +31,9 @@ end
 //Use line below or make dropDownMenu's frame.origin.y >= 64 to avoid the wrong insets if ViewController is with an UINavigationController
 //self.automaticallyAdjustsScrollViewInsets = NO;
 
-CYDropDownMenu *dropDownMenu = [[CYDropDownMenu alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 45)];
+CGFloat navigationBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height + (self.navigationController.navigationBar.frame.size.height ?: 0.0));
+
+CYDropDownMenu *dropDownMenu = [[CYDropDownMenu alloc] initWithFrame:CGRectMake(0, navigationBarHeight, self.view.frame.size.width, 45)];
 dropDownMenu.sectionTitles = @[@"Category", @"Price", @"Distance", @"Order", @"More"];
 dropDownMenu.sectionsItems = @[@[@"All",@"Food", @"Hotel", @"Bank", @"Cinema", @"Entertainment"],
                                 @[@"$0", @"$1-$100", @"$101-$1000", @">$1000"],

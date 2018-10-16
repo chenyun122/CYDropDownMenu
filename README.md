@@ -15,7 +15,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 target 'YourProjectName' do
-   pod 'CYDropDownMenu', '~> 1.0.0'
+   pod 'CYDropDownMenu', '~> 1.0.1'
 end
 ```
 For Swfit, remember to `import CYDropDownMenu` module before using it.
@@ -28,10 +28,10 @@ Just use it like `UIView`. You could quickly find out how to use it with more de
 
 **Create the `CYDropDownMenu` and set data:**
 ```Objective-C
-//Use line below or make dropDownMenu's frame.origin.y >= 64 to avoid the wrong insets if ViewController is with an UINavigationController
-//self.automaticallyAdjustsScrollViewInsets = NO;
 
-CYDropDownMenu *dropDownMenu = [[CYDropDownMenu alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 45)];
+CGFloat navigationBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height + (self.navigationController.navigationBar.frame.size.height ?: 0.0));
+    
+CYDropDownMenu *dropDownMenu = [[CYDropDownMenu alloc] initWithFrame:CGRectMake(0, navigationBarHeight, self.view.frame.size.width, 45)];
 dropDownMenu.sectionTitles = @[@"Category", @"Price", @"Distance", @"Order", @"More"];
 dropDownMenu.sectionsItems = @[@[@"All",@"Food", @"Hotel", @"Bank", @"Cinema", @"Entertainment"],
                                 @[@"$0", @"$1-$100", @"$101-$1000", @">$1000"],

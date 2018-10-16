@@ -19,14 +19,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    //Use line below or make dropDownMenu's frame.origin.y >= 64 to avoid the wrong insets if ViewController is with an UINavigationController
-    //self.automaticallyAdjustsScrollViewInsets = NO;
     
-    CGFloat topbarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height +
-                            (self.navigationController.navigationBar.frame.size.height ?: 0.0));
+    CGFloat navigationBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height + (self.navigationController.navigationBar.frame.size.height ?: 0.0));
     
-    dropDownMenu = [[CYDropDownMenu alloc] initWithFrame:CGRectMake(0, topbarHeight, self.view.frame.size.width, 45)];
+    dropDownMenu = [[CYDropDownMenu alloc] initWithFrame:CGRectMake(0, navigationBarHeight, self.view.frame.size.width, 45)];
     dropDownMenu.sectionTitles = @[@"Category", @"Price", @"Distance", @"Order", @"More"];
     dropDownMenu.sectionsItems = @[@[@"All",@"Food", @"Hotel", @"Bank", @"Cinema", @"Entertainment"],
                                    @[@"$0", @"$1-$100", @"$101-$1000", @">$1000"],
@@ -51,6 +47,19 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    dropDownMenu.frame = CGRectMake(0, 0, size.width, dropDownMenu.frame.size.height);
+    
+    __block typeof(dropDownMenu) blockDropDownMenu = dropDownMenu;
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        CGFloat navigationBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height + (self.navigationController.navigationBar.frame.size.height ?: 0.0));
+        blockDropDownMenu.frame = CGRectMake(0, navigationBarHeight, size.width, 45);
+    }];
+    
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 

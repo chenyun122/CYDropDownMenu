@@ -32,6 +32,9 @@
 //For the case there are only 1 or 2 titles, we center them.
 @property(nonatomic,assign) BOOL autoCenterTitles;
 
+//The Font of sections titles
+@property(nonatomic,strong) UIFont *sectionTitleFont;
+
 //The ViewController's view will be considered as the rootView if the property is not set. Set this property if limited the DropDownMenu and its actions into a particular SubView.
 //Keep this to nil usually.
 @property(nonatomic,weak) UIView *rootView;

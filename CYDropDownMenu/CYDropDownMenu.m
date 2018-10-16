@@ -131,6 +131,8 @@ CGFloat const kItemRowHeight = 44;
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     [self applyFrameToSubviews];
+    [self.titlesCollectionView reloadData];
+    [self closeItemListAndShade];
 }
 
 - (void)setSectionTitles:(NSArray<NSString *> *)sectionTitles{
@@ -177,6 +179,13 @@ CGFloat const kItemRowHeight = 44;
     self.bottomLineLayer.hidden = bottomLineHidden;
 }
 
+- (UIFont *)sectionTitleFont {
+    if (_sectionTitleFont == nil) {
+        _sectionTitleFont = [UIFont systemFontOfSize:15.0];
+    }
+    return _sectionTitleFont;
+}
+
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.sectionTitles.count;
@@ -186,6 +195,7 @@ CGFloat const kItemRowHeight = 44;
     CYTitleCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kTitleCellId forIndexPath:indexPath];
     cell.titleColor = self.sectionTitleColor;
     cell.titleTintColor = self.sectionTitleTintColor;
+    cell.titleLabel.font = self.sectionTitleFont;
     
     NSInteger selectedItemIndex = [selectedItemIndexes[@(indexPath.row)] integerValue];
     if (selectedItemIndex >= 0) {
@@ -198,11 +208,24 @@ CGFloat const kItemRowHeight = 44;
     return cell;
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *text;
+    NSInteger selectedItemIndex = [selectedItemIndexes[@(indexPath.row)] integerValue];
+    if (selectedItemIndex >= 0) {
+        text = self.sectionsItems[indexPath.row][selectedItemIndex];
+    }
+    else{
+        text = self.sectionTitles[indexPath.row];
+    }
+    
+    CGSize stringSize = [text sizeWithAttributes:@{NSFontAttributeName:self.sectionTitleFont}];
+    return CGSizeMake(stringSize.width + 31.0, collectionView.frame.size.height);
+}
 
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (selectedTitleIndex == indexPath.row && self.itemsTableView.superview != nil) {
-        [self shadeTapped:nil]; //close menu if same title clicked twice.
+        [self closeItemListAndShade]; //close menu if same title clicked twice.
     }
     else{ //open menu
         selectedTitleIndex = indexPath.row;
@@ -255,7 +278,7 @@ CGFloat const kItemRowHeight = 44;
         [weakSelf.titlesCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:selectedTitleIndexBlock inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
     });
     
-    [self shadeTapped:nil];
+    [self closeItemListAndShade];
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(CYDropDownMenu:didSelectItemAtIndexPath:)]) {
         NSIndexPath *selectedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:selectedTitleIndex];
@@ -277,6 +300,10 @@ CGFloat const kItemRowHeight = 44;
 }
 
 - (void)shadeTapped:(id)sender {
+    [self closeItemListAndShade];
+}
+
+- (void)closeItemListAndShade {
     [self.shadeView removeFromSuperview];
     [self.itemsTableView removeFromSuperview];
     

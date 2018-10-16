@@ -10,26 +10,42 @@
 
 
 @interface CYTitleCollectionViewCell()
-
-
 @property(nonatomic,strong) UIImageView *indicatorImageView;
-
 @end
 
 
 @implementation CYTitleCollectionViewCell
 
-#pragma mark - Properties
-- (UILabel *)titleLabel {
-    if (_titleLabel == nil) {
-        _titleLabel = [[UILabel alloc] init];
-        _titleLabel.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:_titleLabel];
+NSString *const kImageNameArrowDown = @"CYDropDownMenu_arrow_down";
+NSString *const kImageNameArrowUp = @"CYDropDownMenu_arrow_up";
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setupSubView];
     }
-    
-    return _titleLabel;
+    return self;
 }
 
+- (void)setupSubView {
+    CGRect frame = self.contentView.frame;
+    frame.size.width -= 15;
+    _titleLabel = [[UILabel alloc] initWithFrame:frame];
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.contentView addSubview:_titleLabel];
+    
+    _indicatorImageView = [[UIImageView alloc] initWithImage:[self imageNamed:kImageNameArrowDown]];
+    _indicatorImageView.contentMode = UIViewContentModeCenter;
+    frame = _indicatorImageView.frame;
+    frame.origin.y = self.contentView.frame.size.height / 2.0 - frame.size.height / 2.0;
+    frame.origin.x = self.contentView.frame.size.width - frame.size.width - 8;
+    _indicatorImageView.frame = frame;
+    _indicatorImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    [self.contentView addSubview:_indicatorImageView];
+}
+
+#pragma mark - Properties
 - (void)setTitleColor:(UIColor *)titleColor {
     _titleColor = titleColor;
     [self applyTitleColor];
@@ -40,30 +56,20 @@
     [self applyTitleColor];
 }
 
-- (UIImageView *)indicatorImageView {
-    if (_indicatorImageView == nil) {
-        _indicatorImageView = [[UIImageView alloc] initWithImage:[self imageNamed:@"arrow_down"]];
-        _indicatorImageView.contentMode = UIViewContentModeCenter;
-        [self addSubview:_indicatorImageView];
-    }
-    
-    return _indicatorImageView;
-}
-
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     
     if (selected) {
-        _indicatorImageView.image = [self imageNamed:@"arrow_up"];
+        _indicatorImageView.image = [self imageNamed:kImageNameArrowUp];
     }
     else{
-        _indicatorImageView.image = [self imageNamed:@"arrow_down"];
+        _indicatorImageView.image = [self imageNamed:kImageNameArrowDown];
     }
     
     [self applyTitleColor];
 }
 
-
+/* To fix iOS8 layout problem we are using method `sizeForItemAtIndexPath` to caculate the size instead.
 #pragma mark - Overrided Functions
 - (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     UICollectionViewLayoutAttributes *attributes = [super preferredLayoutAttributesFittingAttributes:layoutAttributes];
@@ -76,7 +82,7 @@
 
     return attributes;
 }
-
+*/
 
 #pragma mark - Private Functions
 - (void)applyTitleColor {
@@ -91,7 +97,7 @@
 }
 
 - (void)makeIndicatorArrowDown {
-    _indicatorImageView.image = [self imageNamed:@"arrow_down"];
+    _indicatorImageView.image = [self imageNamed:kImageNameArrowDown];
 }
 
 - (UIImage *)imageNamed:(NSString *)imageName {

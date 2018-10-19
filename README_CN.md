@@ -15,7 +15,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 target 'YourProjectName' do
-   pod 'CYDropDownMenu', '~> 1.0.1'
+   pod 'CYDropDownMenu', '~> 1.0.2'
 end
 ```
 对于Swift项目, 集成之后，记得在使用前先通过 `import CYDropDownMenu` 导入该模块。

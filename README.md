@@ -15,7 +15,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 target 'YourProjectName' do
-   pod 'CYDropDownMenu', '~> 1.0.1'
+   pod 'CYDropDownMenu', '~> 1.0.2'
 end
 ```
 For Swfit, remember to `import CYDropDownMenu` module before using it.

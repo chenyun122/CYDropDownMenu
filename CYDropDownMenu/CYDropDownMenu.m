@@ -101,9 +101,10 @@ CGFloat const kItemRowHeight = 44;
         _itemsTableView = [[UITableView alloc] init];
         _itemsTableView.dataSource = self;
         _itemsTableView.delegate = self;
-        _itemsTableView.separatorColor = UIColor.clearColor;
         [_itemsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kItemCellId];
     }
+    
+    _itemsTableView.separatorStyle = UITableViewCellSeparatorStyleNone; //Storybard will reset the separator style. So we always setup it there.
     
     return _itemsTableView;
 }

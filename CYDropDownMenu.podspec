@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "CYDropDownMenu"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "An iOS Drop Down Menu."
   s.description  = <<-DESC
                     An iOS Drop Down Menu, like desktop application menu.
